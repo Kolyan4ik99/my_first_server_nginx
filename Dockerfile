@@ -27,4 +27,6 @@ COPY ./srcs/config.inc.php phpmyadmin
 COPY ./srcs/wp-config.php /var/www/html
 COPY ./srcs/init.sh ./
 
+EXPOSE 80 443
+
 CMD ./init.sh bash
