@@ -12,16 +12,19 @@ RUN mv phpMyAdmin-5.0.1-english phpmyadmin
 RUN wget https://wordpress.org/latest.tar.gz
 RUN tar -xvzf latest.tar.gz && rm -rf latest.tar.gz
 
-RUN openssl req -x509 -nodes -days 365 -subj "/C=RU/ST=Russia/L=Tatarstan/O=sd/OU=21kaza/CN=cclock" -newkey rsa:2048 -keyout /etc/ssl/nginx-selfsigned.key -out /etc/ssl/nginx-selfsigned.crt;
+RUN openssl req -x509 -nodes -days 365 \
+    -subj "/C=RU/ST=Tatarstan/L=Kazan/O=21school/OU=21kazan/CN=cclock" \
+    -newkey rsa:2048 -keyout /etc/ssl/nginx-selfsigned.key -out /etc/ssl/nginx-selfsigned.crt;
 
 RUN chown -R www-data:www-data *
 RUN chmod -R 755 /var/www/*
 
-# RUN rm -f /etc/nginx/sites-available/default
-#
-# COPY ./srcs/nginx.conf /etc/nginx/sites-available/
+COPY ./srcs/nginx.conf /etc/nginx/sites-available/localhost
+RUN ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/
+RUN rm -f /etc/nginx/sites-enabled/default
+
 COPY ./srcs/config.inc.php phpmyadmin
 COPY ./srcs/wp-config.php /var/www/html
 COPY ./srcs/init.sh ./
 
-CMD bash init.sh
+CMD ./init.sh bash
